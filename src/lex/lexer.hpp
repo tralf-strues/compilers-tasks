@@ -57,6 +57,8 @@ class Lexer {
   // Current token
   Token peek_{};
 
+  bool advanced_{false};
+
   Scanner scanner_;
   IdentTable table_;
 };

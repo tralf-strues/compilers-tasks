@@ -6,8 +6,42 @@ namespace lex {
 
 //////////////////////////////////////////////////////////////////////
 
-enum class TokenType {
-  // Your code goes here
+enum class TokenType : uint32_t {
+  /* One-two character tokens */
+  kPlus,
+  kMinus,
+  kStar,
+  kDiv,
+  kAssign,
+  kEquals,
+  kNotEq,
+  kNot,
+  kLess,
+  kGreater,
+  kLeftParen,
+  kRightParen,
+  kLeftCBrace,
+  kRightCBrace,
+  kComma,
+  kColon,
+
+  /* Keywords */
+  kTrue,
+  kFalse,
+  kFun,
+  kVar,
+  kIf,
+  kThen,
+  kElse,
+  kReturn,
+
+  /* Literals */
+  kNumber,
+  kString,
+  kIdentifier,
+
+  /* Other */
+  kEOF
 };
 
 ////////////////////////////////////////////////////////////////

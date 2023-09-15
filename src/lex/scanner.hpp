@@ -17,7 +17,25 @@ namespace lex {
 //////////////////////////////////////////////////////////////////////
 
 class Scanner {
-  // Your code goes here
+ public:
+  Scanner(std::istream& source);
+
+  const Location& CurrentLocation() const;
+
+  char CurrentSymbol() const;
+  char NextSymbol() const;
+
+  void MoveRight();
+  void MoveNextLine();
+
+  size_t CurrentOffset() const;
+  std::string_view SubString(size_t start, size_t length) const;
+
+ private:
+  std::string buffer_;
+
+  size_t cur_offset_{0};
+  Location current_location_{};
 };
 
 //////////////////////////////////////////////////////////////////////
