@@ -2,6 +2,20 @@
 
 //////////////////////////////////////////////////////////////////////
 
+/* Statements */
+class Statement;
+class ExprStatement;
+class AssignmentStatement;
+
+//////////////////////////////////////////////////////////////////////
+
+/* Declarations */
+class VarDeclStatement;
+class FunDeclStatement;
+
+//////////////////////////////////////////////////////////////////////
+
+/* Expressions */
 class Expression;
 class ComparisonExpression;
 class BinaryExpression;
@@ -24,51 +38,28 @@ class ReturnExpression;
 
 //////////////////////////////////////////////////////////////////////
 
-class Statement;
-class ExprStatement;
-class AssignmentStatement;
-
-//////////////////////////////////////////////////////////////////////
-
-class VarDeclaration;
-class FunDeclaration;
-class TypeDeclaration;
-class ImplDeclaration;
-class TraitDeclaration;
-
-//////////////////////////////////////////////////////////////////////
-
-class BindingPattern;
-class LiteralPattern;
-class StructPattern;
-class VariantPattern;
-class DiscardingPattern;
-
-//////////////////////////////////////////////////////////////////////
-
 class Visitor {
  public:
   virtual ~Visitor() = default;
 
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
-  // Your code goes here
+  /* Statements */
+  virtual void VisitExprStatement(ExprStatement* node) = 0;
+  virtual void VisitAssignment(AssignmentStatement* node) = 0;
 
+  /* Declarations */
+  virtual void VisitVarDecl(VarDeclStatement* node) = 0;
+  virtual void VisitFunDecl(FunDeclStatement* node) = 0;
+
+  /* Expressions */
+  virtual void VisitComparison(ComparisonExpression* node) = 0;
+  virtual void VisitBinary(BinaryExpression* node) = 0;
+  virtual void VisitUnary(UnaryExpression* node) = 0;
+  virtual void VisitFnCall(FnCallExpression* node) = 0;
+  virtual void VisitBlock(BlockExpression* node) = 0;
+  virtual void VisitIf(IfExpression* node) = 0;
+  virtual void VisitLiteral(LiteralExpression* node) = 0;
+  virtual void VisitVarAccess(VarAccessExpression* node) = 0;
+  virtual void VisitReturn(ReturnExpression* node) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////

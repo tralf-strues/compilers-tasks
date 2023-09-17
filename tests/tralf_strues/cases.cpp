@@ -1,4 +1,5 @@
 #include <lex/lexer.hpp>
+#include <ast/visitors/print_visitor.hpp>
 
 // Finally,
 #include <catch2/catch_test_macros.hpp>
@@ -138,16 +139,58 @@ TEST_CASE("Assign vs Equals", "[lex]") {
 
 //////////////////////////////////////////////////////////////////////
 
-// TEST_CASE("Lex types", "[lex]") {
-//   std::stringstream source(": Int Bool String Unit");
-//   lex::Lexer l{source};
+TEST_CASE("PrintVisitor: binary expression", "[ast]") {
+  LiteralExpression lhs_num{lex::Token{lex::TokenType::kNumber, {.number = 1}}};
+  LiteralExpression rhs_num{lex::Token{lex::TokenType::kNumber, {.number = 2}}};
 
-//   CHECK(l.Matches(lex::TokenType::COLUMN));
+  BinaryExpression bin_expr{lex::Token{lex::TokenType::kDiv}, &lhs_num, &rhs_num};
 
-//   CHECK(l.Matches(lex::TokenType::TY_INT));
-//   CHECK(l.Matches(lex::TokenType::TY_BOOL));
-//   CHECK(l.Matches(lex::TokenType::TY_STRING));
-//   CHECK(l.Matches(lex::TokenType::TY_UNIT));
-// }
+  std::ostringstream oss;
+  PrintVisitor visitor{oss};
+
+  visitor.VisitBinary(&bin_expr);
+
+  CHECK(oss.str() == "1 / 2");
+}
 
 //////////////////////////////////////////////////////////////////////
+
+TEST_CASE("PrintVisitor: unary expression", "[ast]") {
+  LiteralExpression operand{lex::Token{lex::TokenType::kNumber, {.number = 22}}};
+
+  UnaryExpression un_expr{lex::Token{lex::TokenType::kNot}, &operand};
+
+  std::ostringstream oss;
+  PrintVisitor visitor{oss};
+
+  visitor.VisitUnary(&un_expr);
+
+  CHECK(oss.str() == "!22");
+}
+
+//////////////////////////////////////////////////////////////////////
+
+TEST_CASE("PrintVisitor: function declaration", "[ast]") {
+  VarAccessExpression lhs_a{lex::Token{lex::TokenType::kIdentifier, {.identifier = {"a"}}}};
+  VarAccessExpression rhs_b{lex::Token{lex::TokenType::kIdentifier, {.identifier = {"b"}}}};
+
+  BinaryExpression bin_expr{lex::Token{lex::TokenType::kStar}, &lhs_a, &rhs_b};
+  ReturnExpression return_expr{lex::Token{lex::TokenType::kReturn}, &bin_expr};
+  ExprStatement expr_statement{&return_expr};
+  BlockExpression body{lex::Token{lex::TokenType::kLeftParen}, {&expr_statement}};
+
+  FunDeclStatement fun_decl{lex::Token{lex::TokenType::kIdentifier, {.identifier = "main"}},
+                            {lex::Token{lex::TokenType::kIdentifier, {.identifier = "a"}},
+                             lex::Token{lex::TokenType::kIdentifier, {.identifier = "b"}}},
+                            &body};
+
+  std::ostringstream oss;
+  PrintVisitor visitor{oss};
+
+  visitor.VisitFunDecl(&fun_decl);
+
+  CHECK(oss.str() ==
+        "fun main a b  = {\n"
+        "return a * b;\n"
+        "}\n");
+}

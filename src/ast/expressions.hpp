@@ -27,17 +27,21 @@ class LvalueExpression : public Expression {};
 
 class ComparisonExpression : public Expression {
  public:
-  // Constructor
+  ComparisonExpression(lex::Token cmp_operator, Expression* lhs, Expression* rhs)
+      : cmp_operator(cmp_operator), lhs(lhs), rhs(rhs) {
+  }
 
-  virtual void Accept(Visitor* /*visitor*/) override {
-    std::abort();
+  virtual void Accept(Visitor* visitor) override {
+    visitor->VisitComparison(this);
   }
 
   virtual lex::Location GetLocation() override {
-    std::abort();
+    return cmp_operator.location;
   }
 
-  // TODO: fields, helpers, etc...
+  lex::Token cmp_operator;
+  Expression* lhs;
+  Expression* rhs;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -46,136 +50,155 @@ class ComparisonExpression : public Expression {
 
 class BinaryExpression : public Expression {
  public:
-  // Constructor
+  BinaryExpression(lex::Token binary_operator, Expression* lhs, Expression* rhs)
+      : binary_operator(binary_operator), lhs(lhs), rhs(rhs) {
+  }
 
-  virtual void Accept(Visitor* /*visitor*/) override {
-    std::abort();
+  virtual void Accept(Visitor* visitor) override {
+    visitor->VisitBinary(this);
   }
 
   virtual lex::Location GetLocation() override {
-    std::abort();
+    return binary_operator.location;
   }
 
-  // TODO: fields, helpers, etc...
+  lex::Token binary_operator;
+  Expression* lhs;
+  Expression* rhs;
 };
 
 //////////////////////////////////////////////////////////////////////
 
 class UnaryExpression : public Expression {
  public:
-  // Constructor
+  UnaryExpression(lex::Token unary_operator, Expression* operand) : unary_operator(unary_operator), operand(operand) {
+  }
 
-  virtual void Accept(Visitor* /*visitor*/) override {
-    std::abort();
+  virtual void Accept(Visitor* visitor) override {
+    visitor->VisitUnary(this);
   }
 
   virtual lex::Location GetLocation() override {
-    std::abort();
+    return unary_operator.location;
   }
 
-  // TODO: fields, helpers, etc...
+  lex::Token unary_operator;
+  Expression* operand;
 };
 
 //////////////////////////////////////////////////////////////////////
 
 class FnCallExpression : public Expression {
  public:
-  // Constructor
+  FnCallExpression(lex::Token name, std::vector<Expression*> args) : name(name), args(args) {
+  }
 
-  virtual void Accept(Visitor* /*visitor*/) override {
-    std::abort();
+  virtual void Accept(Visitor* visitor) override {
+    visitor->VisitFnCall(this);
   }
 
   virtual lex::Location GetLocation() override {
-    std::abort();
+    return name.location;
   }
 
-  // TODO: fields, helpers, etc...
+  lex::Token name;
+  std::vector<Expression*> args;
 };
 
 //////////////////////////////////////////////////////////////////////
 
 class BlockExpression : public Expression {
  public:
-  // Constructor
+  BlockExpression(lex::Token open_brace, std::vector<Statement*> statements)
+      : open_brace(open_brace), statements(statements) {
+  }
 
-  virtual void Accept(Visitor* /*visitor*/) override {
-    std::abort();
+  virtual void Accept(Visitor* visitor) override {
+    visitor->VisitBlock(this);
   }
 
   virtual lex::Location GetLocation() override {
-    std::abort();
+    return open_brace.location;
   }
 
-  // TODO: fields, helpers, etc...
+  lex::Token open_brace;
+  std::vector<Statement*> statements;
 };
 
 //////////////////////////////////////////////////////////////////////
 
 class IfExpression : public Expression {
  public:
-  // Constructor
+  IfExpression(lex::Token if_token, Expression* condition_expr, Expression* true_expr, Expression* false_expr)
+      : if_token(if_token), condition_expr(condition_expr), true_expr(true_expr), false_expr(false_expr) {
+  }
 
-  virtual void Accept(Visitor* /*visitor*/) override {
-    std::abort();
+  virtual void Accept(Visitor* visitor) override {
+    visitor->VisitIf(this);
   }
 
   virtual lex::Location GetLocation() override {
-    std::abort();
+    return if_token.location;
   }
 
-  // TODO: fields, helpers, etc...
+  lex::Token if_token;
+  Expression* condition_expr;
+  Expression* true_expr;
+  Expression* false_expr;
 };
 
 //////////////////////////////////////////////////////////////////////
 
 class LiteralExpression : public Expression {
  public:
-  // Constructor
+  LiteralExpression(lex::Token literal) : literal(literal) {}
 
-  virtual void Accept(Visitor* /*visitor*/) override {
-    std::abort();
+  virtual void Accept(Visitor* visitor) override {
+    visitor->VisitLiteral(this);
   }
 
   virtual lex::Location GetLocation() override {
-    std::abort();
+    return literal.location;
   }
 
-  // TODO: fields, helpers, etc...
+  lex::Token literal;
 };
 
 //////////////////////////////////////////////////////////////////////
 
 class VarAccessExpression : public LvalueExpression {
  public:
-  // Constructor
+  VarAccessExpression(lex::Token variable) : variable(variable) {}
 
-  virtual void Accept(Visitor* /*visitor*/) override {
-    std::abort();
+  virtual void Accept(Visitor* visitor) override {
+    visitor->VisitVarAccess(this);
   }
 
   virtual lex::Location GetLocation() override {
-    std::abort();
+    return variable.location;
   }
 
-  // TODO: fields, helpers, etc...
+  lex::Token variable;
 };
 
 //////////////////////////////////////////////////////////////////////
 
 class ReturnExpression : public Expression {
  public:
-  // Constructor
+  ReturnExpression(lex::Token return_token, Expression* expression)
+      : return_token(return_token), expression(expression) {
+  }
 
-  virtual void Accept(Visitor* /*visitor*/) override {
-    std::abort();
+  virtual void Accept(Visitor* visitor) override {
+    visitor->VisitReturn(this);
   }
 
   virtual lex::Location GetLocation() override {
-    std::abort();
+    return return_token.location;
   }
 
-  // TODO: fields, helpers, etc...
+  lex::Token return_token;
+  Expression* expression;
 };
 
 //////////////////////////////////////////////////////////////////////
